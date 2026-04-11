@@ -33,6 +33,11 @@ jobs:
           cd frontend
           npm ci
 
+      - name: Show frontend dependency versions
+        run: |
+          cd frontend
+          npm ls vite esbuild
+
       - name: Audit frontend dependencies
         run: |
           cd frontend
@@ -45,7 +50,7 @@ jobs:
         run: docker build -t todo-frontend:latest ./frontend
 
       - name: Run Trivy scan on backend image
-        uses: aquasecurity/trivy-action@0.24.0
+        uses: aquasecurity/trivy-action@0.33.1
         with:
           image-ref: "docker-backend:latest"
           format: "table"
@@ -54,19 +59,15 @@ jobs:
           severity: "CRITICAL,HIGH"
 
       - name: Run Trivy scan on frontend image
-        uses: aquasecurity/trivy-action@0.24.0
+        uses: aquasecurity/trivy-action@0.33.1
         with:
           image-ref: "todo-frontend:latest"
           format: "table"
           exit-code: "1"
           ignore-unfixed: true
           severity: "CRITICAL,HIGH"
-          
+
       - name: Run Gitleaks
         uses: gitleaks/gitleaks-action@v2
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-
-         
-

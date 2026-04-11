@@ -1,0 +1,7 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: backend-config
+  namespace: todo-app
+data:
+  DATABASE_URL: postgresql+psycopg://todo_user:todo_pass@postgres:5432/todo_db

@@ -1,0 +1,44 @@
+name: Build and Push Docker Images
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  docker:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Log in to GHCR
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Extract repository owner
+        id: vars
+        run: echo "owner_lc=${GITHUB_REPOSITORY_OWNER,,}" >> $GITHUB_OUTPUT
+
+      - name: Build backend image
+        run: |
+          docker build -t ghcr.io/${{ steps.vars.outputs.owner_lc }}/todo-backend:latest ./backend
+
+      - name: Build frontend image
+        run: |
+          docker build -t ghcr.io/${{ steps.vars.outputs.owner_lc }}/todo-frontend:latest ./frontend
+
+      - name: Push backend image
+        run: |
+          docker push ghcr.io/${{ steps.vars.outputs.owner_lc }}/todo-backend:latest
+
+      - name: Push frontend image
+        run: |
+          docker push ghcr.io/${{ steps.vars.outputs.owner_lc }}/todo-frontend:latest

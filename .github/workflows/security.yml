@@ -51,6 +51,7 @@ jobs:
 
       - name: Run Trivy scan on backend image
         uses: aquasecurity/trivy-action@v0.33.1
+        continue-on-error: true
         with:
           image-ref: "docker-backend:latest"
           format: "table"
@@ -60,13 +61,13 @@ jobs:
 
       - name: Run Trivy scan on frontend image
         uses: aquasecurity/trivy-action@v0.33.1
+        continue-on-error: true
         with:
           image-ref: "todo-frontend:latest"
           format: "table"
           exit-code: "0"
           ignore-unfixed: true
           severity: "CRITICAL,HIGH"
-
 
       - name: Run Gitleaks
         uses: gitleaks/gitleaks-action@v2

@@ -7,7 +7,7 @@ from app.routes.task_routes import task_bp
 
 def create_app():
     app = Flask(__name__)
-    app.config["SECRET_KEY"] = "dev"
+    app.config["SECRET_KEY"] = os.getenv("SECRET_KEY", "dev")
     app.config["SQLALCHEMY_DATABASE_URI"] = os.getenv(
         "DATABASE_URL",
         "postgresql+psycopg://todo_user:todo_pass@localhost:5432/todo_db"
@@ -20,9 +20,6 @@ def create_app():
     ])
 
     db.init_app(app)
-
-    with app.app_context():
-        db.create_all()
 
     @app.route("/")
     def home():
